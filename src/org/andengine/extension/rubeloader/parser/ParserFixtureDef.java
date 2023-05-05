@@ -14,7 +14,7 @@ public class ParserFixtureDef extends ParserDef<FixtureDef> {
 
 	public static int MAX_POLY_VERTS = 8;
 	@Override
-	protected FixtureDef doParse(AutocastMap pMap, float tX, float tY) {
+	protected FixtureDef doParse(AutocastMap pMap) {
 
 		if (null == pMap)
 			return null;

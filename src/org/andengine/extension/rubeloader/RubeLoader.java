@@ -62,20 +62,24 @@ public class RubeLoader {
 	// ===========================================================
 	// Methods
 	// ===========================================================
-	public RubeDef loadMoreToExistingWorld(final Resources pResources, final IEntity pSceneEntity, final ITextureProvider pTextureProvider,
-			final VertexBufferObjectManager pVBOM, int resId, final IPhysicsWorldProvider pPhysicsWorldProvider) {
-		return loadMoreToExistingWorld(pResources, pSceneEntity, pTextureProvider, pVBOM, resId, pPhysicsWorldProvider, 0, 0);
-	}
+	public RubeDef loadMoreToExistingWorld(final Resources pResources, final IEntity pSceneEntity, final ITextureProvider pTextureProvider, final VertexBufferObjectManager pVBOM, int resId, final IPhysicsWorldProvider pPhysicsWorldProvider) {
 
-	public RubeDef loadMoreToExistingWorld(final Resources pResources, final IEntity pSceneEntity, final ITextureProvider pTextureProvider,
-			final VertexBufferObjectManager pVBOM, int resId, final IPhysicsWorldProvider pPhysicsWorldProvider, float tX, float tY) {
+		return loadMoreToExistingWorld(readResource(resId, pResources), pSceneEntity, pTextureProvider, pVBOM, pPhysicsWorldProvider);
+	}
+	
+	public RubeDef loadMoreToExistingWorld(final Resources pResources, final IEntity pSceneEntity, final ITextureProvider pTextureProvider, final VertexBufferObjectManager pVBOM, final String pPathString, final IPhysicsWorldProvider pPhysicsWorldProvider) {
+
+		return loadMoreToExistingWorld(readAsset(pPathString, pResources), pSceneEntity, pTextureProvider, pVBOM, pPhysicsWorldProvider);
+	}
+	
+	public RubeDef loadMoreToExistingWorld(final String jsonString, final IEntity pSceneEntity, final ITextureProvider pTextureProvider, final VertexBufferObjectManager pVBOM, final IPhysicsWorldProvider pPhysicsWorldProvider) {
 		long startTime = System.currentTimeMillis();
 
 		this.mEntityFactory.configure(pSceneEntity, pTextureProvider, pVBOM);
 
 		RubeDef rube;
 		try {
-			rube = mRubeParser.continueParse(pPhysicsWorldProvider, readResource(resId, pResources), tX, tY);
+			rube = mRubeParser.continueParse(pPhysicsWorldProvider, jsonString);
 		} catch (ParseException e) {
 			throw new RuntimeException("RUBE json parsing failed! ", e);
 		}
@@ -86,20 +90,14 @@ public class RubeLoader {
 		return rube;
 	}
 
-	public RubeDef load(final Resources pResources, final IEntity pSceneEntity, final ITextureProvider pTextureProvider,
-			final VertexBufferObjectManager pVBOM, int resId) {
-		return load(pResources, pSceneEntity, pTextureProvider, pVBOM, resId, 0, 0);
-	}
-
-	public RubeDef load(final Resources pResources, final IEntity pSceneEntity, final ITextureProvider pTextureProvider,
-			final VertexBufferObjectManager pVBOM, int resId, float tX, float tY) {
+	public RubeDef load(final Resources pResources, final IEntity pSceneEntity, final ITextureProvider pTextureProvider, final VertexBufferObjectManager pVBOM, int resId) {
 		long startTime = System.currentTimeMillis();
 
 		this.mEntityFactory.configure(pSceneEntity, pTextureProvider, pVBOM);
 
 		RubeDef rube;
 		try {
-			rube = mRubeParser.parse(readResource(resId, pResources), tX, tY);
+			rube = mRubeParser.parse(readResource(resId, pResources));
 		} catch (ParseException e) {
 			throw new RuntimeException("RUBE json parsing failed! ", e);
 		}
@@ -119,6 +117,15 @@ public class RubeLoader {
 		}
 	}
 
+	public static String readAsset(final String assetPath, final Resources pResources) {
+		try {
+			return StreamUtils.readFully(pResources.getAssets().open(assetPath));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return null;
+		}
+	}
+	
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

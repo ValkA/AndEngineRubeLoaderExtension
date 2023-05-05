@@ -12,7 +12,7 @@ public class PhysicsWorldProvider implements IPhysicsWorldProvider{
 	public PhysicsWorldProvider(AutocastMap pMap, IPhysicsWorldFactory pPhysicsWorldFactory ) {
 
 		ParserWorldDef worldParser = new ParserWorldDef();
-		WorldDef worldDef = worldParser.parse(pMap, 0, 0);
+		WorldDef worldDef = worldParser.parse(pMap);
 		mPhysicsWorld = pPhysicsWorldFactory.populate(worldDef);
 	}
 

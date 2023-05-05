@@ -5,11 +5,12 @@ import java.util.List;
 import org.andengine.extension.rubeloader.def.ImageDef;
 import org.andengine.extension.rubeloader.json.AutocastMap;
 import org.andengine.util.adt.color.Color;
+import org.andengine.util.adt.color.ColorUtils;
 
 public class ParserImageDef extends ParserDef<ImageDef> {
 
 	@Override
-	protected ImageDef doParse(AutocastMap pMap, float tX, float tY) {
+	protected ImageDef doParse(AutocastMap pMap) {
 		ImageDef img = new ImageDef();
 
 		String imageName = pMap.getString("name", "");

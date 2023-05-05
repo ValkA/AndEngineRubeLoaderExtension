@@ -18,7 +18,7 @@ import com.badlogic.gdx.physics.box2d.joints.WheelJointDef;
 public class ParserJointDef extends ParserDef<JointDef> {
 
 	@Override
-	protected JointDef doParse(AutocastMap pMap, float tX, float tY) {
+	protected JointDef doParse(AutocastMap pMap) {
 
 		String type = pMap.getString("type", "");
 		if (type.equals("revolute")) {

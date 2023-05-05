@@ -33,17 +33,17 @@ public abstract class Parser<T> {
 		return mInflatedMap;
 	}
 
-	protected abstract T doParse(AutocastMap pMap, float tX, float tY);
+	protected abstract T doParse(AutocastMap pMap);
 
-	public T parse(AutocastMap pMap, float tX, float tY) {
-		T ret = doParse(pMap, tX, tY);
+	public T parse(AutocastMap pMap) {
+		T ret = doParse(pMap);
 		this.mInflatedResult = ret;
 		this.mInflatedMap = pMap;
 		return ret;
 	}
 
-	public T parse(String pStringToParse, float tX, float tY) throws ParseException {
-		return parse(loadMapFromString(pStringToParse), tX, tY);
+	public T parse(String pStringToParse) throws ParseException {
+		return parse(loadMapFromString(pStringToParse));
 	}
 
 	protected AutocastMap loadMapFromString(String pStringToParse) throws ParseException {

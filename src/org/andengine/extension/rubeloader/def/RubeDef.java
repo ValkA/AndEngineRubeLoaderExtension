@@ -210,6 +210,14 @@ public class RubeDef {
 		}
 		return keys.toArray(new Joint[0]);
 	}
+	
+	public Joint[] getAllJoints() {
+		Set<Joint> keys = new HashSet<Joint>();
+		for (Entry<Joint, String> entry : names.m_jointToNameMap.entrySet()) {
+				keys.add(entry.getKey());
+		}
+		return keys.toArray(new Joint[0]);
+	}
 
 	public IEntity[] getImagesByName(String name) {
 		Set<IEntity> keys = new HashSet<IEntity>();
@@ -234,10 +242,27 @@ public class RubeDef {
 		return null;
 	}
 
+	public Body[] getAllBodies() {
+		Set<Body> keys = new HashSet<Body>();
+		for (Entry<Body, String> entry : names.m_bodyToNameMap.entrySet()) {
+				keys.add(entry.getKey());
+		}
+		return keys.toArray(new Body[0]);
+	}
+	
 	public Fixture getFixtureByName(String name) {
 		for (Entry<Fixture, String> entry : names.m_fixtureToNameMap.entrySet()) {
 			if (name.equals(entry.getValue())) {
 				return entry.getKey();
+			}
+		}
+		return null;
+	}
+	
+	public String getNameByFixture(Fixture fixture) {
+		for (Entry<Fixture, String> entry : names.m_fixtureToNameMap.entrySet()) {
+			if (fixture.equals(entry.getKey())) {
+				return entry.getValue();
 			}
 		}
 		return null;

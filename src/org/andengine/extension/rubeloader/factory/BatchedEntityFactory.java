@@ -32,7 +32,7 @@ import com.badlogic.gdx.math.Vector2;
  * @author nazgee
  *
  */
-public class EntityFactory implements IEntityFactory {
+public class BatchedEntityFactory implements IEntityFactory {
 	// ===========================================================
 	// Constants
 	// ===========================================================
@@ -51,7 +51,7 @@ public class EntityFactory implements IEntityFactory {
 	/**
 	 * @note when using this constructor you MUST call configure() before this factory is used!
 	 */
-	public EntityFactory() {
+	public BatchedEntityFactory() {
 		super();
 		configure(null, null, null);
 	}
@@ -62,7 +62,7 @@ public class EntityFactory implements IEntityFactory {
 	 * @param pTextureProvider Will be used to obtain {@link ITextureRegion} from a given {@link String} texture region name
 	 * @param pVBOM Every {@link IEntity} will be created using this {@link VertexBufferObjectManager}
 	 */
-	public EntityFactory(IEntity pSceneEntity, ITextureProvider pTextureProvider, VertexBufferObjectManager pVBOM) {
+	public BatchedEntityFactory(IEntity pSceneEntity, ITextureProvider pTextureProvider, VertexBufferObjectManager pVBOM) {
 		super();
 		configure(pSceneEntity, pTextureProvider, pVBOM);
 	}
@@ -94,7 +94,7 @@ public class EntityFactory implements IEntityFactory {
 			 */
 			Log.e(getClass().getSimpleName(), "No file name was given. This is either parsing or .json error. Substitute graphics will be created (simple red X with white border).");
 
-			Entity errorEntity = new Entity(image.center.x * p2m, image.center.y * p2m);
+			IEntity errorEntity = new Entity(image.center.x * p2m, image.center.y * p2m);
 
 			Rectangle bar1out = new Rectangle(0, 0, 110, 25, this.mVBOM);
 			Rectangle bar1in = new Rectangle(0, 0, 100, 20, this.mVBOM);
@@ -115,6 +115,7 @@ public class EntityFactory implements IEntityFactory {
 			errorEntity.attachChild(bar2out);
 			errorEntity.attachChild(bar1in);
 			errorEntity.attachChild(bar2in);
+			onProducedEntity(errorEntity);
 			return errorEntity;
 		}
 		String wantedTextureRegion = new File(image.file).getName();
@@ -128,8 +129,10 @@ public class EntityFactory implements IEntityFactory {
 
 		final float x = image.center.x * p2m;
 		final float y = image.center.y * p2m;
-
-		return produceImpl(x, y, w, h, region, this.mVBOM, this.mSceneEntity, this.mTextureProvider, pWorld, image, pAutocastMap);
+		
+		final IEntity producedEntity = produceImpl(x, y, w, h, region, this.mVBOM, this.mSceneEntity, this.mTextureProvider, pWorld, image, pAutocastMap);
+		onProducedEntity(producedEntity);
+		return producedEntity;
 	}
 
 
@@ -170,10 +173,12 @@ public class EntityFactory implements IEntityFactory {
 				entity.setUserData(connector);
 				pWorld.registerPhysicsConnector(connector);
 
+				entity.onUpdate(0f);
+				
 				Vector2Pool.recycle(dissplacement);
 			}
 
-			pSceneEntity.attachChild(entity);
+			//pSceneEntity.attachChild(entity);
 		}
 
 		return entity;
@@ -205,12 +210,13 @@ public class EntityFactory implements IEntityFactory {
 				{
 					this.mRotationOffset = MathUtils.radToDeg(-pRequestedRotationOffset);
 				}
-	
+				
 				@Override
-				protected void applyRotation(GLState pGLState) {
-					this.mRotation += this.mRotationOffset;
-					super.applyRotation(pGLState);
-					this.mRotation -= this.mRotationOffset;
+				public void setRotation(final float pRotation) {
+					this.mRotation = pRotation + this.mRotationOffset;
+
+					this.mLocalToParentTransformationDirty = true;
+					this.mParentToLocalTransformationDirty = true;
 				}
 			};
 		} else {
@@ -219,12 +225,13 @@ public class EntityFactory implements IEntityFactory {
 				{
 					this.mRotationOffset = MathUtils.radToDeg(-pRequestedRotationOffset);
 				}
-	
+
 				@Override
-				protected void applyRotation(GLState pGLState) {
-					this.mRotation += this.mRotationOffset;
-					super.applyRotation(pGLState);
-					this.mRotation -= this.mRotationOffset;
+				public void setRotation(final float pRotation) {
+					this.mRotation = pRotation + this.mRotationOffset;
+
+					this.mLocalToParentTransformationDirty = true;
+					this.mParentToLocalTransformationDirty = true;
 				}
 			};
 		}
@@ -248,6 +255,10 @@ public class EntityFactory implements IEntityFactory {
 	// Methods
 	// ===========================================================
 
+	public void onProducedEntity(final IEntity producedEntity){
+		
+	}
+	
 	// ===========================================================
 	// Inner and Anonymous Classes
 	// ===========================================================

@@ -23,7 +23,7 @@ public class AdapterListToParser<T> extends Parser<ArrayList<T>> {
 	}
 
 	@Override
-	protected ArrayList<T> doParse(AutocastMap pMap, float tX, float tY) {
+	protected ArrayList<T> doParse(AutocastMap pMap) {
 		this.mInflatedMaps = (List<AutocastMap>) pMap.get(this.getKeyToInflate());
 
 		ArrayList<T> inflatedResults = null;
@@ -33,7 +33,7 @@ public class AdapterListToParser<T> extends Parser<ArrayList<T>> {
 			inflatedResults = new ArrayList<T>(mapscount);
 			onParsingStarted(mapscount);
 			for (AutocastMap map : this.mInflatedMaps) {
-				T result = this.mInflator.parse(map, tX, tY);
+				T result = this.mInflator.parse(map);
 				onParsed(map, result);
 				inflatedResults.add(result);
 			}
