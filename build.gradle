@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+
+android {
+    namespace 'org.andengine'
+    compileSdkVersion 33
+
+    defaultConfig {
+        minSdkVersion 17
+        targetSdkVersion 33
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            resources.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+    }
+}
+
+dependencies {
+    implementation project(':AndEngine')
+    implementation project(':AndEnginePhysicsBox2DExtension')
+}
